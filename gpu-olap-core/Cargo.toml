@@ -1,0 +1,33 @@
+[package]
+name = "gpu-olap-core"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+arrow.workspace = true
+arrow-array.workspace = true
+arrow-schema.workspace = true
+arrow-buffer.workspace = true
+parquet.workspace = true
+
+sqlparser.workspace = true
+anyhow.workspace = true
+thiserror.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+tracing.workspace = true
+tokio.workspace = true
+async-trait.workspace = true
+
+crossbeam.workspace = true
+parking_lot.workspace = true
+dashmap.workspace = true
+once_cell.workspace = true
+
+gpu-memory-manager = { path = "../gpu-memory-manager" }
+gpu-kernel-compiler = { path = "../gpu-kernel-compiler" }
+
+[lib]
+name = "gpu_olap_core"
+path = "src/lib.rs"
