@@ -92,14 +92,37 @@ fn parse_select(select: &Select) -> Result<LogicalPlan> {
     
     // Parse ORDER BY
     if !query.order_by.is_empty() {
-        // TODO: implement ORDER BY
+        let sort_exprs = query
+            .order_by
+            .iter()
+            .map(|order_by_expr| parse_expr(&order_by_expr.expr))
+            .collect::<Result<Vec<_>>>()?;
+
+        plan = LogicalPlan::Sort {
+            input: Box::new(plan),
+            exprs: sort_exprs,
+        };
     }
-    
+
     // Parse LIMIT
-    if let Some(limit) = &query.limit {
-        // TODO: implement LIMIT
+    if let Some(limit_expr) = &query.limit {
+        use sqlparser::ast::Expr;
+        match limit_expr {
+            Expr::Value(sqlparser::ast::Value::Number(n, _)) => {
+                let limit: usize = n
+                    .parse()
+                    .with_context(|| format!("Invalid LIMIT value: {}", n))?;
+                plan = LogicalPlan::Limit {
+                    input: Box::new(plan),
+                    limit,
+                };
+            }
+            other => {
+                anyhow::bail!("Only numeric LIMIT values are supported, got: {:?}", other)
+            }
+        }
     }
-    
+
     Ok(plan)
 }
 
