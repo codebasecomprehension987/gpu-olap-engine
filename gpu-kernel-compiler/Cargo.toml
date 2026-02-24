@@ -1,0 +1,14 @@
+[package]
+name = "gpu-kernel-compiler"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+cudarc.workspace = true
+anyhow.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+
+[lib]
+name = "gpu_kernel_compiler"
+path = "src/lib.rs"
